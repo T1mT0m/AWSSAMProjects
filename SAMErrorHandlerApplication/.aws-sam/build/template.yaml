@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'SAMErrorHandlerApplication
+
+  Sample SAM Template for SAMErrorHandlerApplication
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 128
+Resources:
+  ErrorHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ErrorHandlerFunction
+      Handler: com.github.bwar.samerrorhandler.ErrorHandler::handleRequest
+      Runtime: java11
+      Architectures:
+      - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /divide
+            Method: get
+    Metadata:
+      SamResourceId: ErrorHandlerFunction
+Outputs:
+  ErrorHandlerApi:
+    Description: API Gateway endpoint URL for Prod stage for Error Handler function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  ErrorHandlerFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - ErrorHandlerFunction
+      - Arn
+  ErrorHandlerFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - ErrorHandlerFunctionRole
+      - Arn

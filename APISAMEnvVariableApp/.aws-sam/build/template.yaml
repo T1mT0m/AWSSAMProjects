@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'APISAMEnvVariableApp
+
+  Sample SAM Template for APISAMEnvVariableApp
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 128
+Resources:
+  APISAMEnvVariableAppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: APISAMEnvVariableAppFunction
+      Handler: com.github.bwar.samapienvapp.APISAMEnvVariableApp::handleRequest
+      Runtime: java11
+      Architectures:
+      - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE1
+          PARAM2: VALUE2
+          PARAM3: VALUE3
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /env
+            Method: get
+    Metadata:
+      SamResourceId: APISAMEnvVariableAppFunction
+Outputs:
+  APISAMEnvVariableAppApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/env
+  APISAMEnvVariableAppFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - APISAMEnvVariableAppFunction
+      - Arn
+  APISAMEnvVariableAppFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - APISAMEnvVariableAppFunctionRole
+      - Arn

@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'LambdaVersionApp
+
+  Sample SAM Template for LambdaVersionApp
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 128
+Resources:
+  LambdaVersionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: LambdaVersionFunction
+      Handler: com.github.bwar.lambdaversion.LambdaVersion::handleRequest
+      Runtime: java11
+      Architectures:
+      - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /version
+            Method: get
+    Metadata:
+      SamResourceId: LambdaVersionFunction
+Outputs:
+  LambdaVersionApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/version
+  LambdaVersionFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - LambdaVersionFunction
+      - Arn
+  LambdaVersionFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - LambdaVersionFunctionRole
+      - Arn
